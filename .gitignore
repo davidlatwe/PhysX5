@@ -1,3 +1,7 @@
+build/
+install/
+cmake-build-*/
+
 # Generated files (placed in source tree)
 PxConfig.h
 
@@ -36,6 +40,5 @@ Session.vim
 *.project
 *.cproject
 *.ycm_extra_conf.pyc
-
+.vscode
 .idea/
-cmake-build-debug/
