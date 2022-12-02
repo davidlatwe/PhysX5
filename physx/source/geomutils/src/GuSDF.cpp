@@ -1148,9 +1148,9 @@ namespace Gu
 		T* sdf;
 
 	public:
-		DenseSDF(PxU32 width, PxU32 height, PxU32 depth, T* sdf)
+		DenseSDF(PxU32 width_, PxU32 height_, PxU32 depth_, T* sdf_)
 		{
-			initialize(width, height, depth, sdf);
+			initialize(width_, height_, depth_, sdf_);
 		}
 
 		DenseSDF() {}
