@@ -157,9 +157,9 @@ bool SocketImpl::connect(const char* host, uint16_t port, uint32_t timeout)
 		pfd.events = POLLOUT;
 		const int pollResult = ::poll(&pfd, 1, timeout /*milliseconds*/);
 
-		const bool timeout = (pollResult == 0);
+		const bool isTimeout = (pollResult == 0);
 		const bool error = (pollResult < 0); // an error inside poll happened. Can check error with `errno` variable.
-		if(timeout || error)
+		if(isTimeout || error)
 		{
 			disconnect();
 			return false;
