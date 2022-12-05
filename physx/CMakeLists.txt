@@ -114,8 +114,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKEMODULES_PATH})
 set(PROJECT_CMAKE_FILES_DIR source/compiler/cmake)
 # The following files define all the flags specific to platforms, compilers and build configurations.
 # The file is included in the source/ subdirectory
-set(PLATFORM_CMAKE_FILES_DIR "${PHYSX_ROOT_DIR}/${PROJECT_CMAKE_FILES_DIR}/${TARGET_BUILD_PLATFORM}")
-set(PLATFORM_CMAKELISTS "${PLATFORM_CMAKE_FILES_DIR}/CMakeLists.txt")
+set(PLATFORM_CMAKELISTS "${PHYSX_ROOT_DIR}/${PROJECT_CMAKE_FILES_DIR}/${TARGET_BUILD_PLATFORM}/CMakeLists.txt")
 
 SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
@@ -142,7 +141,6 @@ set(BUILD_SOURCE_FOLDER ${CMAKE_CURRENT_BINARY_DIR}/sdk_source_bin)
 add_subdirectory(source ${BUILD_SOURCE_FOLDER})
 
 if(PX_BUILDSNIPPETS)
-    # TODO(phcerdan) this is the part to simplify
     # Add Snippets projects into the solution
     add_subdirectory(${PHYSX_ROOT_DIR}/snippets/compiler/cmake ${CMAKE_CURRENT_BINARY_DIR}/sdk_snippets_bin)
 
