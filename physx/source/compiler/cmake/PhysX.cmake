@@ -100,16 +100,16 @@ SET(PHYSX_HEADERS
 	${PHYSX_ROOT_DIR}/include/PxSparseGridParams.h
 	${PHYSX_ROOT_DIR}/include/PxVisualizationParameter.h
 )
-#IF(NOT PX_GENERATE_SOURCE_DISTRO AND NOT PUBLIC_RELEASE)
-#	LIST(APPEND PHYSX_HEADERS
-#		${PHYSX_ROOT_DIR}/include/PxCustomParticleSystem.h
-#		${PHYSX_ROOT_DIR}/include/PxFEMCloth.h
-#		${PHYSX_ROOT_DIR}/include/PxFLIPParticleSystem.h
-#		${PHYSX_ROOT_DIR}/include/PxGridParticleSystem.h
-#		${PHYSX_ROOT_DIR}/include/PxHairSystem.h
-#		${PHYSX_ROOT_DIR}/include/PxMPMParticleSystem.h
-#	)
-#ENDIF()
+IF(NOT PX_GENERATE_SOURCE_DISTRO AND NOT PUBLIC_RELEASE)
+	LIST(APPEND PHYSX_HEADERS
+		${PHYSX_ROOT_DIR}/include/PxCustomParticleSystem.h
+		${PHYSX_ROOT_DIR}/include/PxFEMCloth.h
+		${PHYSX_ROOT_DIR}/include/PxFLIPParticleSystem.h
+		${PHYSX_ROOT_DIR}/include/PxGridParticleSystem.h
+		${PHYSX_ROOT_DIR}/include/PxHairSystem.h
+		${PHYSX_ROOT_DIR}/include/PxMPMParticleSystem.h
+	)
+ENDIF()
 SOURCE_GROUP(include FILES ${PHYSX_HEADERS})
 
 SET(PHYSX_MATERIAL_HEADERS

@@ -40,7 +40,15 @@ option(PX_EXPORT_LOWLEVEL_PDB "Export low level pdb's" OFF)
 option(PX_GENERATE_GPU_PROJECTS_ONLY "Generate GPU projects only. (Untested)" OFF)
 mark_as_advanced(PX_GENERATE_GPU_PROJECTS_ONLY)
 
-set(PUBLIC_RELEASE OFF)
+set(PUBLIC_RELEASE 1)
+
+if(DISABLE_CUDA_PHYSX)
+    set(DISABLE_CUDA_PHYSX "DISABLE_CUDA_PHYSX" CACHE STRING "" FORCE)
+    message(STATUS "DISABLE_CUDA_PHYSX: Yes")
+else()
+    set(DISABLE_CUDA_PHYSX "" CACHE STRING "" FORCE)
+    message(STATUS "DISABLE_CUDA_PHYSX: No")
+endif()
 
 # Enable folder properties
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)

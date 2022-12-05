@@ -1,4 +1,5 @@
 param (
+    [bool]$gpu = 0,
     [string]$buildtype = "Release",
     [int]$clean = 0  # Before building, delete the build directory entirely
 )
@@ -38,7 +39,9 @@ pushd # Store current path
 mkdir -ea silentlycontinue $builddir
 cd $builddir
 
-cmake ../../../physx -G Ninja -DCMAKE_BUILD_TYPE="$buildtype"
+cmake ../../../physx -G Ninja `
+    -DCMAKE_BUILD_TYPE="$buildtype" `
+    -DDISABLE_CUDA_PHYSX="$(if ($gpu) { "No" } else { "Yes" })"
 
 cmake --build . --config $buildtype --target install
 
