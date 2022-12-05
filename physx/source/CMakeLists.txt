@@ -41,3 +41,11 @@ add_custom_command(TARGET PhysX POST_BUILD
 # Install tree
 install(FILES ${PROJECT_SOURCE_DIR}/bin/${PLATFORM_BIN_NAME}/$<CONFIG>
         DESTINATION ${PHYSX_INSTALL_PREFIX}/bin/)
+
+
+# Package version
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+        ${CMAKE_CURRENT_BINARY_DIR}/PhysXConfigVersion.cmake
+        VERSION ${PHYSX_VERSION}
+        COMPATIBILITY SameMajorVersion)

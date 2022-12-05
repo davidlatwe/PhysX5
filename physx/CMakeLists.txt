@@ -25,7 +25,12 @@
 ## Copyright (c) 2008-2022 NVIDIA Corporation. All rights reserved.
 
 cmake_minimum_required(VERSION 3.13)
-project(PhysX C CXX)
+
+file(READ "version.txt" PHYSX_VERSION)
+project(PhysX
+        LANGUAGES C CXX
+        VERSION ${PHYSX_VERSION})
+message(STATUS "PhysX VERSION: ${PHYSX_VERSION}")
 cmake_policy(SET CMP0057 NEW) # Enable IN_LIST
 cmake_policy(SET CMP0077 NEW) # option() does nothing when variable is alredy set
 
