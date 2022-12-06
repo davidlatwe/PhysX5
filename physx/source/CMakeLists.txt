@@ -25,22 +25,19 @@ SET(HEADER_GUARD_NAME "CONFIG")
 SET(HEADER_CONTENT "")
 configure_file(${CMAKEMODULES_PATH}/template/PxIncludeTemplate.h ${PHYSX_ROOT_DIR}/include/PxConfig.h)
 
-### Move libPhysXGPU from source tree to build and install tree:
-# libPhysXGPU libraries are in the repository (/bin) but the CUDA code is not open
-# XXX(phcerdan) Nvdia does not provides GNU (gcc) GPU libaries, only clang.
-# I guess both compilers are ABI compatible, but not explicitly tested in this codebase
-# GCC in linux is not an option right now upstream
 
-# Build tree
-add_custom_command(TARGET PhysX POST_BUILD
-        COMMAND "${CMAKE_COMMAND}" -E copy_directory
-        ${PROJECT_SOURCE_DIR}/bin/${PLATFORM_BIN_NAME}/$<CONFIG>/
-        "${CMAKE_CURRENT_BINARY_DIR}/"
-        COMMENT "Copying libPhysXGPU from the appropriate source folder to the build directory.")
-
-# Install tree
-install(FILES ${PROJECT_SOURCE_DIR}/bin/${PLATFORM_BIN_NAME}/$<CONFIG>
-        DESTINATION ${PHYSX_INSTALL_PREFIX}/bin/)
+# Copy GPU lib to build and install tree
+if(NOT DISABLE_CUDA_PHYSX AND NOT APPLE)
+    # Build tree
+    add_custom_command(TARGET PhysX POST_BUILD
+            COMMAND "${CMAKE_COMMAND}" -E copy_directory
+            ${PROJECT_SOURCE_DIR}/bin/${PLATFORM_BIN_NAME}/$<CONFIG>/
+            "${CMAKE_CURRENT_BINARY_DIR}/"
+            COMMENT "Copying libPhysXGPU from the appropriate source folder to the build directory.")
+    # Install tree
+    install(FILES ${PROJECT_SOURCE_DIR}/bin/${PLATFORM_BIN_NAME}/$<CONFIG>
+            DESTINATION ${PHYSX_INSTALL_PREFIX}/bin/)
+endif()
 
 
 # Package version

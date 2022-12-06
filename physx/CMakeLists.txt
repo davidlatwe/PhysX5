@@ -108,8 +108,103 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
     set(TARGET_BUILD_PLATFORM "android")
 endif()
 
+
+# Download external dependencies
+#
+
+function(get_7z 7z_exe)
+    set(pkg_name "7za")
+    set(pkg_ver "16.02.4")
+    set(pkg_dir "${PROJECT_SOURCE_DIR}/../externals/${pkg_name}")
+    if(NOT EXISTS ${pkg_dir})
+        file(MAKE_DIRECTORY ${pkg_dir})
+        set(file_name "${pkg_name}@${pkg_ver}.zip")
+        set(file_md5 "df8c71fbba63a6d2c1d98fbdfa805f78")
+        set(output "${PROJECT_SOURCE_DIR}/../download/${file_name}")
+        file(DOWNLOAD "https://bootstrap.packman.nvidia.com/${file_name}" ${output} EXPECTED_MD5 ${file_md5})
+        execute_process(
+                COMMAND ${CMAKE_COMMAND} -E tar -xf "${output}"
+                WORKING_DIRECTORY ${pkg_dir}
+                RESULT_VARIABLE rv
+        )
+        if(rv)
+            message(FATAL_ERROR ${rv})
+        endif()
+    endif()
+
+    if(CMAKE_CL_64)
+        set(7z_arch "64")
+    else()
+        set(7z_arch "32")
+    endif()
+
+    if(WIN32)
+        set(7z_exe ${pkg_dir}/win-x86/${7z_arch}/7za.exe PARENT_SCOPE)
+    elseif(APPLE)
+        set(7z_exe ${pkg_dir}/mac-x86/${7z_arch}/7za PARENT_SCOPE)
+    else()
+        set(7z_exe ${pkg_dir}/linux-x86/${7z_arch}/7za PARENT_SCOPE)
+    endif()
+endfunction()
+
+
+function(external_package pkg_name pkg_version file_ext file_md5)
+    if(EXISTS "${PROJECT_SOURCE_DIR}/../externals/${pkg_name}")
+        return()
+    endif()
+    set(7z_exe "")
+    get_7z(7z_exe)
+    # Get Package
+    set(pkg_dir "${PROJECT_SOURCE_DIR}/../externals/${pkg_name}")
+    if(NOT EXISTS ${pkg_dir})
+        file(MAKE_DIRECTORY ${pkg_dir})
+
+        set(file_name "${pkg_name}@${pkg_version}.${file_ext}")
+        set(url "https://d4i3qtqj3r0z5.cloudfront.net/${file_name}")
+        set(output "${PROJECT_SOURCE_DIR}/../download/${file_name}")
+
+        file(DOWNLOAD ${url} ${output} EXPECTED_MD5 ${file_md5})
+        message(STATUS "Unzipping: ${output}")
+        execute_process(
+                COMMAND ${7z_exe} x "${output}"
+                WORKING_DIRECTORY ${pkg_dir}
+                RESULT_VARIABLE rv
+        )
+        if(rv)
+            message(FATAL_ERROR ${rv})
+        endif()
+    endif()
+endfunction()
+
+
+external_package("CMakeModules" "1.28.trunk.31965103" "7z" "7eb7cd4cf029ae3b2fa8206511d0cb13")
+set(ENV{PM_CMakeModules_PATH} "${PROJECT_SOURCE_DIR}/../externals/CMakeModules")
+external_package("rapidjson" "1.1.0-67fac85-073453e1" "7z" "cebce7f986c4505568e8e7c47fcaccdc")
+set(ENV{PM_rapidjson_PATH} "${PROJECT_SOURCE_DIR}/../externals/rapidjson")
+external_package("clang-physxmetadata" "4.0.0.31968624_1.1" "7z" "d8fc156c7c5db89d486da234bade4b3b")
+
+if(NOT DISABLE_CUDA_PHYSX)
+    if(WIN32)
+        external_package("freeglut-windows" "3.4_1.1" "7z" "53c4bee83f386beb837f68d0d468f419")
+        set(ENV{PM_freeglut_PATH} "${PROJECT_SOURCE_DIR}/../externals/freeglut-windows")
+        external_package("PhysXDevice" "18.12.7.3" "7z" "7bb668cfab0dd298f00e746c94ce7003")
+        set(ENV{PM_PhysXDevice_PATH} "${PROJECT_SOURCE_DIR}/../externals/PhysXDevice")
+    endif()
+
+    if(UNIX AND NOT APPLE)
+        external_package("opengl-linux" "2017.5.19.1" "7z" "356e2046346080cfc739e05e69e6736f")
+    endif()
+
+    if(WIN32 OR (UNIX AND NOT APPLE))
+        external_package("PhysXGpu" "104.0-5.1.118.32022295-public" "zip" "21b1951b0470323cd9ef63c58501ca76")
+        set(ENV{PM_PhysXGpu_PATH} "${PROJECT_SOURCE_DIR}/../externals/PhysXGpu")
+    endif()
+
+endif()
+
+
 ### Set CMake folders
-set(CMAKEMODULES_PATH ${PROJECT_SOURCE_DIR}/../externals/cmakemodules/ CACHE INTERNAL "Path to CMakeModules")
+SET(CMAKEMODULES_PATH $ENV{PM_CMakeModules_PATH} CACHE INTERNAL "Path to CMakeModules")
 set(CMAKEMODULES_NAME "CMakeModules" CACHE INTERNAL "CMakeModules name")
 set(CMAKEMODULES_VERSION "1.27" CACHE INTERNAL "CMakeModules version from generation batch")
 # CMAKE_MODULE_PATH is empty by default
