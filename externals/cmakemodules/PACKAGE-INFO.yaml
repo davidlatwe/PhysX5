@@ -1,5 +1,0 @@
-Package : CMakeModules
-Maintainers : abelarbi@nvidia.com
-Description : CMakeModules customized for PhysX SDK.
-SWIPAT NvBug : 
-Repository : p4sw:2006 sw/physx/tools/CMake/CMakeModules/trunk
