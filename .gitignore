@@ -1,5 +1,7 @@
 build/
 install/
+download/
+externals/
 cmake-build-*/
 
 # Generated files (placed in source tree)
