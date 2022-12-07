@@ -216,18 +216,18 @@ set(PROJECT_CMAKE_FILES_DIR source/compiler/cmake)
 # The file is included in the source/ subdirectory
 set(PLATFORM_CMAKELISTS "${PHYSX_ROOT_DIR}/${PROJECT_CMAKE_FILES_DIR}/${TARGET_BUILD_PLATFORM}/CMakeLists.txt")
 
-SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # INSTALL PATHS
 if(WIN32)
-    SET(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../install/windows/PhysX")
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../install/windows/PhysX")
 elseif(APPLE)
-    SET(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../install/mac/PhysX")
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../install/mac/PhysX")
 else()
-    SET(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../install/linux/PhysX")
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../install/linux/PhysX")
 endif()
-SET(PHYSX_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/PhysX CACHE INTERNAL "Install path to install PhysX")
-MESSAGE(STATUS "PHYSX_INSTALL_PREFIX: " ${PHYSX_INSTALL_PREFIX})
+set(PHYSX_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/PhysX CACHE INTERNAL "Install path to install PhysX")
+message(STATUS "PHYSX_INSTALL_PREFIX: " ${PHYSX_INSTALL_PREFIX})
 
 # Set PX_ROOT_LIB_DIR (used in cmake files)
 string(TOLOWER ${CMAKE_C_COMPILER_ID} compiler_id)

@@ -19,10 +19,11 @@ set(install_cmake_dir "${PX_ROOT_LIB_DIR}/cmake/physx")
 message(STATUS "PLATFORM_CMAKELISTS: ${PLATFORM_CMAKELISTS}")
 include(${PLATFORM_CMAKELISTS})
 
-# generate PxPhysXConfig.h header that will contain PhysX configuration defines like PX_PHYSX_STATIC_LIB
 # XXX(phcerdan) the template is actually empty? Maybe populated after? No harm having an empty header meanwhile.
-SET(HEADER_GUARD_NAME "CONFIG")
-SET(HEADER_CONTENT "")
+set(HEADER_GUARD_NAME "CONFIG")
+set(HEADER_CONTENT "")
+
+# generate PxPhysXConfig.h header that will contain PhysX configuration defines like PX_PHYSX_STATIC_LIB
 configure_file(${CMAKEMODULES_PATH}/template/PxIncludeTemplate.h ${PHYSX_ROOT_DIR}/include/PxConfig.h)
 
 
