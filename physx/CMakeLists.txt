@@ -196,7 +196,7 @@ if(NOT DISABLE_CUDA_PHYSX)
     endif()
 
     if(WIN32 OR (UNIX AND NOT APPLE))
-        external_package("PhysXGpu" "104.0-5.1.118.32022295-public" "zip" "21b1951b0470323cd9ef63c58501ca76")
+        external_package("PhysXGpu" "104.1-5.1.1151.32112585-public" "zip" "c78c177a825e2771739a55f2d9402c72")
         set(ENV{PM_PhysXGpu_PATH} "${PROJECT_SOURCE_DIR}/../externals/PhysXGpu")
     endif()
 
