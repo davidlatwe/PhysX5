@@ -27,12 +27,10 @@
 cmake_minimum_required(VERSION 3.13)
 
 file(READ "version.txt" PHYSX_VERSION)
-project(PhysX
+project(PhysXSDK
         LANGUAGES C CXX
         VERSION ${PHYSX_VERSION})
-message(STATUS "PhysX VERSION: ${PHYSX_VERSION}")
-cmake_policy(SET CMP0057 NEW) # Enable IN_LIST
-cmake_policy(SET CMP0077 NEW) # option() does nothing when variable is alredy set
+message(STATUS "PhysXSDK VERSION: ${PHYSX_VERSION}")
 
 # PhysXSDK options:
 option(PX_BUILDSNIPPETS "Generate the snippets" OFF)
@@ -45,8 +43,7 @@ option(PX_EXPORT_LOWLEVEL_PDB "Export low level pdb's" OFF)
 option(PX_GENERATE_GPU_PROJECTS_ONLY "Generate GPU projects only. (Untested)" OFF)
 mark_as_advanced(PX_GENERATE_GPU_PROJECTS_ONLY)
 
-set(PUBLIC_RELEASE 1)
-
+# GPU feature switch:
 if(DISABLE_CUDA_PHYSX)
     set(DISABLE_CUDA_PHYSX "DISABLE_CUDA_PHYSX" CACHE STRING "" FORCE)
     message(STATUS "DISABLE_CUDA_PHYSX: Yes")
@@ -55,29 +52,8 @@ else()
     message(STATUS "DISABLE_CUDA_PHYSX: No")
 endif()
 
-# Enable folder properties
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-if(CMAKE_CONFIGURATION_TYPES)
-    set(CMAKE_CONFIGURATION_TYPES debug checked profile release)
-    set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING
-        "Reset config to what we need"
-        FORCE)
-
-    set(CMAKE_SHARED_LINKER_FLAGS_CHECKED "")
-    set(CMAKE_SHARED_LINKER_FLAGS_PROFILE "")
-
-    # XXX(phcerdan) PDB are not for consumers, ignore this line
-    # Build PDBs for all configurations.
-    # set(CMAKE_SHARED_LINKER_FLAGS "/DEBUG")
-endif()
-
-# Disable zero_check projects. The default for Switch and XboxOne is ON.
-if(PX_CMAKE_SUPPRESS_REGENERATION)
-    set(CMAKE_SUPPRESS_REGENERATION TRUE)
-endif()
-
-### Set PHYSX_ROOT_DIR to PROJECT_SOURCE_DIR
+# Set PHYSX_ROOT_DIR to PROJECT_SOURCE_DIR
 if(DEFINED PHYSX_ROOT_DIR)
     message(WARNING "PHYSX_ROOT_DIR is externally defined, but it will be overwritten in this CMakeLists. DEPRECATED")
     message("PHYSX_ROOT_DIR (externally set --not used--): ${PHYSX_ROOT_DIR}")
@@ -85,17 +61,13 @@ if(DEFINED PHYSX_ROOT_DIR)
 endif()
 set(PHYSX_ROOT_DIR ${PROJECT_SOURCE_DIR})
 
-### Set TARGET_BUILD_PLATFORM using CMAKE_SYSTEM_NAME
-# for compatibility with current CMake files,
-# for cross-complation, CMAKE_SYSTEM_NAME can be set when running cmake
-if(DEFINED TARGET_BUILD_PLATFORM)
-    if(TARGET_BUILD_PLATFORM STREQUAL "switch" OR
-       TARGET_BUILD_PLATFORM STREQUAL "playstation" OR
-       TARGET_BUILD_PLATFORM STREQUAL "ios")
-       message(FATAL_ERROR "switch, playstation and ios builds are not valid because have not been tested. Use official repository for these.")
-    endif()
-    message(INFO "TARGET_BUILD_PLATFORM (externally set --not used--): ${TARGET_BUILD_PLATFORM}")
-endif()
+
+# To NvidiaBuildOptions
+set(NV_USE_STATIC_WINCRT ON)
+set(NV_USE_GAMEWORKS_OUTPUT_DIRS ON)
+set(PX_OUTPUT_LIB_DIR ${PHYSX_ROOT_DIR})
+set(PX_OUTPUT_BIN_DIR ${PHYSX_ROOT_DIR})
+
 
 set(TARGET_BUILD_PLATFORM "")
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -107,6 +79,20 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
     set(TARGET_BUILD_PLATFORM "android")
 endif()
+
+
+# Install path
+set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../install/${TARGET_BUILD_PLATFORM}/PhysX")
+set(PHYSX_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} CACHE INTERNAL "Install path to install PhysX")
+message(STATUS "PHYSX_INSTALL_PREFIX: " ${PHYSX_INSTALL_PREFIX})
+
+
+# Package version
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+        ${CMAKE_CURRENT_BINARY_DIR}/PhysXConfigVersion.cmake
+        VERSION ${PHYSX_VERSION}
+        COMPATIBILITY SameMajorVersion)
 
 
 # Download external dependencies
@@ -203,46 +189,4 @@ if(NOT DISABLE_CUDA_PHYSX)
 endif()
 
 
-### Set CMake folders
-SET(CMAKEMODULES_PATH $ENV{PM_CMakeModules_PATH} CACHE INTERNAL "Path to CMakeModules")
-set(CMAKEMODULES_NAME "CMakeModules" CACHE INTERNAL "CMakeModules name")
-set(CMAKEMODULES_VERSION "1.27" CACHE INTERNAL "CMakeModules version from generation batch")
-# CMAKE_MODULE_PATH is empty by default
-list(APPEND CMAKE_MODULE_PATH ${CMAKEMODULES_PATH})
-
-### Set platform specific files
-set(PROJECT_CMAKE_FILES_DIR source/compiler/cmake)
-# The following files define all the flags specific to platforms, compilers and build configurations.
-# The file is included in the source/ subdirectory
-set(PLATFORM_CMAKELISTS "${PHYSX_ROOT_DIR}/${PROJECT_CMAKE_FILES_DIR}/${TARGET_BUILD_PLATFORM}/CMakeLists.txt")
-
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
-# INSTALL PATHS
-if(WIN32)
-    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../install/windows/PhysX")
-elseif(APPLE)
-    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../install/mac/PhysX")
-else()
-    set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/../install/linux/PhysX")
-endif()
-set(PHYSX_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/PhysX CACHE INTERNAL "Install path to install PhysX")
-message(STATUS "PHYSX_INSTALL_PREFIX: " ${PHYSX_INSTALL_PREFIX})
-
-# Set PX_ROOT_LIB_DIR (used in cmake files)
-string(TOLOWER ${CMAKE_C_COMPILER_ID} compiler_id)
-# No need to add TARGET_BUILD_PLATFORM and compiler_id in the folder structure
-# set(PX_ROOT_LIB_DIR "${PHYSX_INSTALL_PREFIX}/bin/${TARGET_BUILD_PLATFORM}\.${compiler_id}")
-set(PX_ROOT_LIB_DIR "${PHYSX_INSTALL_PREFIX}/bin")
-
-# We add CMakeLists.txt in the source folders, following standard CMake practices
-# Add PhysX SDK Source code to solution
-set(BUILD_SOURCE_FOLDER ${CMAKE_CURRENT_BINARY_DIR}/sdk_source_bin)
-add_subdirectory(source ${BUILD_SOURCE_FOLDER})
-
-if(PX_BUILDSNIPPETS)
-    # Add Snippets projects into the solution
-    add_subdirectory(${PHYSX_ROOT_DIR}/snippets/compiler/cmake ${CMAKE_CURRENT_BINARY_DIR}/sdk_snippets_bin)
-
-    message("Added Snippets")
-endif()
+add_subdirectory(compiler/public)
