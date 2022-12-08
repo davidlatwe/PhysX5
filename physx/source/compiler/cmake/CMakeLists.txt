@@ -24,11 +24,12 @@
 ##
 ## Copyright (c) 2008-2022 NVIDIA Corporation. All rights reserved.
 
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.13)
 
 project(PhysX C CXX)
 
 CMAKE_POLICY(SET CMP0057 NEW) # Enable IN_LIST
+CMAKE_POLICY(SET CMP0077 NEW) # option() does nothing when variable is alredy set
 
 OPTION(PX_SCALAR_MATH "Disable SIMD math" OFF)
 OPTION(PX_GENERATE_STATIC_LIBRARIES "Generate static libraries" OFF)

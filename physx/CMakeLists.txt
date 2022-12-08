@@ -25,6 +25,9 @@
 ## Copyright (c) 2008-2022 NVIDIA Corporation. All rights reserved.
 
 cmake_minimum_required(VERSION 3.13)
+cmake_policy(SET CMP0057 NEW) # Enable IN_LIST
+cmake_policy(SET CMP0077 NEW) # option() does nothing when variable is alredy set
+message(STATUS "CMake version: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}")
 
 file(READ "version.txt" PHYSX_VERSION)
 project(PhysXSDK
