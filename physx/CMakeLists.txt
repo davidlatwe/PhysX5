@@ -24,16 +24,22 @@
 ##
 ## Copyright (c) 2008-2022 NVIDIA Corporation. All rights reserved.
 
-cmake_minimum_required(VERSION 3.13)
+if(APPLE)
+    cmake_minimum_required(VERSION 3.19.2)
+else()
+    cmake_minimum_required(VERSION 3.13)
+endif()
 cmake_policy(SET CMP0057 NEW) # Enable IN_LIST
 cmake_policy(SET CMP0077 NEW) # option() does nothing when variable is alredy set
 message(STATUS "CMake version: ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}")
+
 
 file(READ "version.txt" PHYSX_VERSION)
 project(PhysXSDK
         LANGUAGES C CXX
         VERSION ${PHYSX_VERSION})
 message(STATUS "PhysXSDK VERSION: ${PHYSX_VERSION}")
+
 
 # PhysXSDK options:
 option(PX_BUILDSNIPPETS "Generate the snippets" OFF)
@@ -81,6 +87,10 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(TARGET_BUILD_PLATFORM "mac")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
     set(TARGET_BUILD_PLATFORM "android")
+endif()
+
+if(APPLE AND CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64")
+    set(PX_OUTPUT_ARCH "arm")
 endif()
 
 
@@ -152,9 +162,10 @@ function(external_package pkg_name pkg_version file_ext file_md5)
         set(output "${PROJECT_SOURCE_DIR}/../download/${file_name}")
 
         file(DOWNLOAD ${url} ${output} EXPECTED_MD5 ${file_md5})
+
         message(STATUS "Unzipping: ${output}")
         execute_process(
-                COMMAND ${7z_exe} x "${output}"
+                COMMAND ${7z_exe} x ${output}
                 WORKING_DIRECTORY ${pkg_dir}
                 RESULT_VARIABLE rv
         )
