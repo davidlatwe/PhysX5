@@ -110,7 +110,7 @@ function(get_7z 7z_exe)
         set(file_name "${pkg_name}@${pkg_ver}.zip")
         set(file_md5 "df8c71fbba63a6d2c1d98fbdfa805f78")
         set(output "${PROJECT_SOURCE_DIR}/../download/${file_name}")
-        file(DOWNLOAD "http://bootstrap.packman.nvidia.com/${file_name}" ${output} EXPECTED_MD5 ${file_md5})
+        file(DOWNLOAD "https://bootstrap.packman.nvidia.com/${file_name}" ${output} EXPECTED_MD5 ${file_md5})
         execute_process(
                 COMMAND ${CMAKE_COMMAND} -E tar -xf "${output}"
                 WORKING_DIRECTORY ${pkg_dir}
@@ -149,7 +149,7 @@ function(external_package pkg_name pkg_version file_ext file_md5)
         file(MAKE_DIRECTORY ${pkg_dir})
 
         set(file_name "${pkg_name}@${pkg_version}.${file_ext}")
-        set(url "http://d4i3qtqj3r0z5.cloudfront.net/${file_name}")
+        set(url "https://d4i3qtqj3r0z5.cloudfront.net/${file_name}")
         set(output "${PROJECT_SOURCE_DIR}/../download/${file_name}")
 
         file(DOWNLOAD ${url} ${output} EXPECTED_MD5 ${file_md5})
