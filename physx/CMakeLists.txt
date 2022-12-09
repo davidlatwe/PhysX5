@@ -111,6 +111,18 @@ write_basic_package_version_file(
 # Download external dependencies
 #
 
+function(run_process)
+    cmake_parse_arguments(PARSE_ARGV 0 PARSED "" "DIR" "CMD")
+    execute_process(
+            COMMAND ${PARSED_CMD}
+            WORKING_DIRECTORY ${PARSED_DIR}
+    )
+    if(rv)
+        message(FATAL_ERROR ${rv})
+    endif()
+endfunction()
+
+
 function(get_7z 7z_exe)
     set(pkg_name "7za")
     set(pkg_ver "16.02.4")
@@ -121,14 +133,10 @@ function(get_7z 7z_exe)
         set(file_md5 "df8c71fbba63a6d2c1d98fbdfa805f78")
         set(output "${PROJECT_SOURCE_DIR}/../download/${file_name}")
         file(DOWNLOAD "https://bootstrap.packman.nvidia.com/${file_name}" ${output} EXPECTED_MD5 ${file_md5})
-        execute_process(
-                COMMAND ${CMAKE_COMMAND} -E tar -xf "${output}"
-                WORKING_DIRECTORY ${pkg_dir}
-                RESULT_VARIABLE rv
+        run_process(
+            CMD ${CMAKE_COMMAND} -E tar -xf "${output}"
+            DIR ${pkg_dir}
         )
-        if(rv)
-            message(FATAL_ERROR ${rv})
-        endif()
     endif()
 
     set(bitness 32)
@@ -146,57 +154,112 @@ function(get_7z 7z_exe)
 endfunction()
 
 
-function(external_package pkg_name pkg_version file_ext file_md5)
-    if(EXISTS "${PROJECT_SOURCE_DIR}/../externals/${pkg_name}")
-        return()
-    endif()
+function(un7z archive work_dir)
     set(7z_exe "")
     get_7z(7z_exe)
-    # Get Package
-    set(pkg_dir "${PROJECT_SOURCE_DIR}/../externals/${pkg_name}")
-    if(NOT EXISTS ${pkg_dir})
-        file(MAKE_DIRECTORY ${pkg_dir})
+    message(STATUS "Unzipping: ${archive}")
+    run_process(
+        CMD ${7z_exe} x ${archive}
+        DIR ${work_dir}
+    )
+endfunction()
 
-        set(file_name "${pkg_name}@${pkg_version}.${file_ext}")
-        set(url "https://d4i3qtqj3r0z5.cloudfront.net/${file_name}")
+
+function(download_package url file_name file_md5 dst_dir)
+    if(NOT EXISTS ${dst_dir})
+        file(MAKE_DIRECTORY ${dst_dir})
+
         set(output "${PROJECT_SOURCE_DIR}/../download/${file_name}")
-
         file(DOWNLOAD ${url} ${output} EXPECTED_MD5 ${file_md5})
+        un7z(${output} ${dst_dir})
 
-        message(STATUS "Unzipping: ${output}")
-        execute_process(
-                COMMAND ${7z_exe} x ${output}
-                WORKING_DIRECTORY ${pkg_dir}
-                RESULT_VARIABLE rv
-        )
-        if(rv)
-            message(FATAL_ERROR ${rv})
-        endif()
     endif()
 endfunction()
 
 
+function(external_package pkg_name pkg_version file_ext file_md5)
+    set(pkg_dir "${PROJECT_SOURCE_DIR}/../externals/${pkg_name}")
+    download_package(
+            "https://d4i3qtqj3r0z5.cloudfront.net/${pkg_name}@${pkg_version}.${file_ext}"
+            "${pkg_name}@${pkg_version}.${file_ext}"
+            ${file_md5}
+            ${pkg_dir}
+    )
+endfunction()
+
+
 external_package("CMakeModules" "1.28.trunk.31965103" "7z" "7eb7cd4cf029ae3b2fa8206511d0cb13")
-set(ENV{PM_CMakeModules_PATH} "${PROJECT_SOURCE_DIR}/../externals/CMakeModules")
 external_package("rapidjson" "1.1.0-67fac85-073453e1" "7z" "cebce7f986c4505568e8e7c47fcaccdc")
-set(ENV{PM_rapidjson_PATH} "${PROJECT_SOURCE_DIR}/../externals/rapidjson")
 external_package("clang-physxmetadata" "4.0.0.31968624_1.1" "7z" "d8fc156c7c5db89d486da234bade4b3b")
 
-if(NOT DISABLE_CUDA_PHYSX)
+set(ENV{PM_CMakeModules_PATH} "${PROJECT_SOURCE_DIR}/../externals/CMakeModules")
+set(ENV{PM_rapidjson_PATH} "${PROJECT_SOURCE_DIR}/../externals/rapidjson")
+
+if(NOT DISABLE_CUDA_PHYSX AND NOT APPLE)
     if(WIN32)
         external_package("freeglut-windows" "3.4_1.1" "7z" "53c4bee83f386beb837f68d0d468f419")
-        set(ENV{PM_freeglut_PATH} "${PROJECT_SOURCE_DIR}/../externals/freeglut-windows")
         external_package("PhysXDevice" "18.12.7.3" "7z" "7bb668cfab0dd298f00e746c94ce7003")
+
+        set(ENV{PM_freeglut_PATH} "${PROJECT_SOURCE_DIR}/../externals/freeglut-windows")
         set(ENV{PM_PhysXDevice_PATH} "${PROJECT_SOURCE_DIR}/../externals/PhysXDevice")
     endif()
 
-    if(UNIX AND NOT APPLE)
+    if(UNIX)
         external_package("opengl-linux" "2017.5.19.1" "7z" "356e2046346080cfc739e05e69e6736f")
     endif()
 
-    if(WIN32 OR (UNIX AND NOT APPLE))
+    if(WIN32 OR UNIX)
         external_package("PhysXGpu" "104.1-5.1.1151.32112585-public" "zip" "c78c177a825e2771739a55f2d9402c72")
+
         set(ENV{PM_PhysXGpu_PATH} "${PROJECT_SOURCE_DIR}/../externals/PhysXGpu")
+    endif()
+
+    # UPX, to compress GPU lib
+    set(upx_version "4.0.1")
+    set(upx_dir "${PROJECT_SOURCE_DIR}/../externals/upx")
+    if (WIN32)
+        set(upx_exe "${upx_dir}/upx-${upx_version}-win64/upx.exe")
+        download_package(
+                "https://github.com/upx/upx/releases/download/v${upx_version}/upx-${upx_version}-win64.zip"
+                "upx-${upx_version}-win64.zip"
+                "acf37b08b0788a640edb25e4de6edca9"
+                ${upx_dir}
+        )
+
+    else()
+        set(upx_exe "${upx_dir}/upx-${upx_version}-i386_linux/upx")
+        download_package(
+                "https://github.com/upx/upx/releases/download/v${upx_version}/upx-${upx_version}-i386_linux.tar.xz"
+                "upx-${upx_version}-i386_linux.tar.xz"
+                "a36817c86da90a323eb35430f9707074"
+                ${upx_dir}
+        )
+    endif()
+
+    string(TOLOWER ${CMAKE_BUILD_TYPE} config)
+    set(compress_target "")
+    if (WIN32)
+        set(compress_target "$ENV{PM_PhysXGpu_PATH}/bin/win.x86_64.vc141.mt/${config}/PhysXGpu_64.dll")
+    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
+        set(compress_target "$ENV{PM_PhysXGpu_PATH}/bin/linux.aarch64/${config}/PhysXGpu_64.so")
+    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        set(compress_target "$ENV{PM_PhysXGpu_PATH}/bin/linux.clang/${config}/PhysXGpu_64.so")
+    endif()
+
+    message(STATUS "About to compress GPU lib: ${compress_target}")
+    execute_process(
+            COMMAND ${upx_exe} -t -qq ${compress_target}
+            WORKING_DIRECTORY ${upx_dir}
+            RESULT_VARIABLE not_compressed
+    )
+    if(not_compressed)
+        message(STATUS "Compressing GPU lib, this may take a few minutes...")
+        run_process(
+            CMD ${upx_exe} ${compress_target}
+            DIR ${upx_dir}
+        )
+    else()
+        message(STATUS "GPU lib already been compressed.")
     endif()
 
 endif()
