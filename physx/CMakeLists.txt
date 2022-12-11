@@ -237,6 +237,10 @@ if(NOT DISABLE_CUDA_PHYSX AND NOT APPLE)
     endif()
 
     string(TOLOWER ${CMAKE_BUILD_TYPE} config)
+    if (${config} STREQUAL "debug")
+        set(config "checked")
+    endif()
+
     set(compress_target "")
     if (WIN32)
         set(compress_target "$ENV{PM_PhysXGpu_PATH}/bin/win.x86_64.vc141.mt/${config}/PhysXGpu_64.dll")
