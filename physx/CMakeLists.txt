@@ -25,9 +25,9 @@
 ## Copyright (c) 2008-2022 NVIDIA Corporation. All rights reserved.
 
 if(APPLE)
-    cmake_minimum_required(VERSION 3.19.2)
+    cmake_minimum_required(VERSION 3.19.2)  # Apple ARM
 else()
-    cmake_minimum_required(VERSION 3.13)
+    cmake_minimum_required(VERSION 3.13)  # CMP0077
 endif()
 cmake_policy(SET CMP0057 NEW) # Enable IN_LIST
 cmake_policy(SET CMP0077 NEW) # option() does nothing when variable is alredy set
