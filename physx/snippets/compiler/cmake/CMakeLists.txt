@@ -24,7 +24,7 @@
 ##
 ## Copyright (c) 2008-2022 NVIDIA Corporation. All rights reserved.
 
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.13)  # CMP0077
 project(Snippets C CXX)
 
 IF(NOT DEFINED CMAKEMODULES_VERSION)
