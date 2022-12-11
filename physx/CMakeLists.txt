@@ -159,7 +159,7 @@ function(un7z archive work_dir)
     get_7z(7z_exe)
     message(STATUS "Unzipping: ${archive}")
     run_process(
-        CMD ${7z_exe} x ${archive}
+        CMD ${7z_exe} x -bso0 -- ${archive}
         DIR ${work_dir}
     )
 endfunction()
