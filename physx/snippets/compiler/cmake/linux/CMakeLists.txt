@@ -51,5 +51,3 @@ SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath='$ORIGIN'")
 
 # Include all of the projects
 SET(PLATFORM_SNIPPETS_LIST Convert LoadCollection)
-
-SET(SNIPPET_RENDER_ENABLED 1)

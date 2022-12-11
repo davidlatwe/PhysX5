@@ -30,6 +30,7 @@
 // This snippet demonstrates the use of immediate articulations.
 // ****************************************************************************
 
+#include <stdio.h>
 #include "PxImmediateMode.h"
 #include "geometry/PxGeometryQuery.h"
 #include "foundation/PxPhysicsVersion.h"

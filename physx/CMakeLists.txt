@@ -43,6 +43,7 @@ message(STATUS "PhysXSDK VERSION: ${PHYSX_VERSION}")
 
 # PhysXSDK options:
 option(PX_BUILDSNIPPETS "Generate the snippets" OFF)
+option(PX_BUILDSNIPPETS_RENDER "Generate the snippets with rendering enabled" ON)
 option(PX_CMAKE_SUPPRESS_REGENERATION "Disable zero_check projects" OFF)
 
 # PhysX options:
@@ -59,6 +60,11 @@ if(DISABLE_CUDA_PHYSX)
 else()
     set(DISABLE_CUDA_PHYSX "" CACHE STRING "" FORCE)
     message(STATUS "DISABLE_CUDA_PHYSX: No")
+endif()
+
+set(RENDER_SNIPPET "")
+if(PX_BUILDSNIPPETS_RENDER)
+    set(RENDER_SNIPPET "RENDER_SNIPPET")
 endif()
 
 

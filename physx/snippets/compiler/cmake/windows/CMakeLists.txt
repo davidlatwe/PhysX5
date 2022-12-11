@@ -55,8 +55,6 @@ SET(SLN_PHYSXDEVICE_PATH "$ENV{PM_PhysXDevice_PATH}/bin/x86/")
 
 # Include ConfigureFileMT to expose that function
 INCLUDE(ConfigureFileMt)
-	
-SET(SNIPPET_RENDER_ENABLED 1)
 
 # Include all of the projects
 SET(PLATFORM_SNIPPETS_LIST Convert LoadCollection DelayLoadHook)

@@ -106,8 +106,8 @@ ENDIF()
 	
 SET(SNIPPETS_VEHICLE2_LIST Vehicle2DirectDrive Vehicle2FourWheelDrive Vehicle2TankDrive Vehicle2Customization Vehicle2Multithreading Vehicle2Truck)	
 LIST(APPEND SNIPPETS_VEHICLE2_LIST ${PLATFORM_SNIPPETS_VEHICLE2_LIST})
-	
-IF(SNIPPET_RENDER_ENABLED)
+
+IF(PX_BUILDSNIPPETS_RENDER)
 	INCLUDE(SnippetRender.cmake)
 	SET_PROPERTY(TARGET SnippetRender PROPERTY FOLDER "Snippets/Libraries only")
 ENDIF()

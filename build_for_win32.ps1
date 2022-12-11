@@ -1,8 +1,15 @@
 param (
     [bool]$gpu = 0,
+    [bool]$snippets = 0,
+    [bool]$render = 0,
     [string]$buildtype = "Release",
     [int]$clean = 0  # Before building, delete the build directory entirely
 )
+
+if ($snippets -and !$gpu) {
+    $gpu = 1;
+    write-host "GPU lib enabled for building snippets."
+}
 
 function check_command {
     param([string]$command)
@@ -41,7 +48,9 @@ cd $builddir
 
 cmake ../../../physx -G Ninja `
     -DCMAKE_BUILD_TYPE="$buildtype" `
-    -DDISABLE_CUDA_PHYSX="$(if ($gpu) { "No" } else { "Yes" })"
+    -DDISABLE_CUDA_PHYSX="$(if ($gpu) { "No" } else { "Yes" })" `
+    -DPX_BUILDSNIPPETS="$(if ($snippets) { "ON" } else { "OFF" })" `
+    -DPX_BUILDSNIPPETS_RENDER="$(if ($render) { "ON" } else { "OFF" })"
 
 cmake --build . --config $buildtype --target install
 
