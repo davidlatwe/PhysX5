@@ -63,12 +63,12 @@ ELSE()
 	SET(GLUT_LIB "GLUT")
 ENDIF()
 
-SET(SnippetRender "SnippetRender")
+SET(SnippetRender "SnippetRender GL GLU ${GLUT_LIB} X11")
 IF(NOT RENDER_SNIPPET)
 	SET(SnippetRender "")
 ENDIF()
 
-SET(SNIPPET_PLATFORM_LINKED_LIBS ${SnippetRender} GL GLU ${GLUT_LIB} X11 rt pthread dl -Wl,-rpath='${ORIGIN}')
+SET(SNIPPET_PLATFORM_LINKED_LIBS ${SnippetRender} rt pthread dl -Wl,-rpath='${ORIGIN}')
 
 IF(NOT PUBLIC_RELEASE)
 	LIST(APPEND SNIPPET_PLATFORM_LINKED_LIBS PhysXGPUExtensions)
