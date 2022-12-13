@@ -116,17 +116,17 @@ write_basic_package_version_file(
 
 # External dependencies
 #
-set(ENV{PM_CMakeModules_PATH} "${PROJECT_SOURCE_DIR}/../externals/CMakeModules")
-set(ENV{PM_rapidjson_PATH} "${PROJECT_SOURCE_DIR}/../externals/rapidjson")
+set(ENV{PM_CMakeModules_PATH} "${PROJECT_SOURCE_DIR}/../external/CMakeModules")
+set(ENV{PM_rapidjson_PATH} "${PROJECT_SOURCE_DIR}/../external/rapidjson")
 
 if(NOT DISABLE_CUDA_PHYSX AND NOT APPLE)
     if(WIN32)
-        set(ENV{PM_freeglut_PATH} "${PROJECT_SOURCE_DIR}/../externals/freeglut-windows")
-        set(ENV{PM_PhysXDevice_PATH} "${PROJECT_SOURCE_DIR}/../externals/PhysXDevice")
+        set(ENV{PM_freeglut_PATH} "${PROJECT_SOURCE_DIR}/../external/freeglut-windows")
+        set(ENV{PM_PhysXDevice_PATH} "${PROJECT_SOURCE_DIR}/../external/PhysXDevice")
     endif()
 
     if(WIN32 OR UNIX)
-        set(ENV{PM_PhysXGpu_PATH} "${PROJECT_SOURCE_DIR}/../externals/PhysXGpu")
+        set(ENV{PM_PhysXGpu_PATH} "${PROJECT_SOURCE_DIR}/../external/PhysXGpu")
     endif()
 endif()
 
