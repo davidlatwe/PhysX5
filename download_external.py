@@ -95,6 +95,9 @@ def get_upx():
             os.makedirs(dst)
         subprocess.check_call(["tar", "-xf", archived], cwd=dst)
 
+        if platform.system() == "Linux":
+            subprocess.check_call(["chmod", "+x", upx])
+
     return upx
 
 
