@@ -43,6 +43,9 @@ if ($clean -ne 0) {
 write-host "Building $buildtype to $builddir"
 pushd # Store current path
 
+write-host "-- Checking dependency..."
+python ./download_external.py $(if ($gpu) { "--gpu" } else { "" }) --config $buildtype
+
 mkdir -ea silentlycontinue $builddir
 cd $builddir
 
