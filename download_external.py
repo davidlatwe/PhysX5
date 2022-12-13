@@ -57,10 +57,10 @@ def get_7z():
     md5 = "df8c71fbba63a6d2c1d98fbdfa805f78"
 
     unpacked = _extract_to(file)
-    if not checksum(file, md5) or not os.path.isdir(unpacked):
-        archived = download(url, file)
-        print("-- Unzipping: %s" % archived)
-        with zipfile.ZipFile(archived, 'r') as zip_ref:
+    if not os.path.isdir(unpacked):
+        a_ = _download_to(file) if checksum(file, md5) else download(url, file)
+        print("-- Unzipping: %s" % a_)
+        with zipfile.ZipFile(a_, 'r') as zip_ref:
             zip_ref.extractall(unpacked)
 
     bitness = "64" if sys.maxsize > 2**32 else "32"
