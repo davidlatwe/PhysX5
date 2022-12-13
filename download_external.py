@@ -95,11 +95,14 @@ def get_upx():
         if not os.path.isdir(dst):
             os.makedirs(dst)
         subprocess.check_call(["tar", "-xf", archived], cwd=dst)
-
-        if platform.system() == "Linux":
-            subprocess.check_call(["chmod", "+x", upx])
+        _chmod_x(upx)
 
     return upx
+
+
+def _chmod_x(file):
+    if platform.system() == "Linux":
+        subprocess.check_call(["chmod", "+x", file])
 
 
 def _download_to(file):
@@ -160,6 +163,7 @@ def compress_gpu(config):
     lib = os.path.join(unpacked, "bin", target, config, file)
     upx = get_upx()
     print("-- About to compress GPU lib: %s" % lib)
+    _chmod_x(lib)
     return_code = subprocess.call([upx, "-t", "-qq", lib])
     if return_code:
         print("-- Compressing GPU lib, this may take a few minutes...")
