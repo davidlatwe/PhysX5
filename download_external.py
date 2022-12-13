@@ -79,15 +79,22 @@ def get_upx():
     if platform.system() == "Windows":
         file = "upx-%s-win64.zip" % version
         md5 = "acf37b08b0788a640edb25e4de6edca9"
-        dst = _extract_to(file)
-        upx = os.path.join(dst, os.path.splitext(file)[0], "upx.exe")
+        dst = _extract_to(file, "upx")
+        upx = os.path.join(dst, "upx-%s-win64" % version, "upx.exe")
     else:
         file = "upx-%s-i386_linux.tar.xz" % version
         md5 = "a36817c86da90a323eb35430f9707074"
-        dst = _extract_to(file)
-        upx = os.path.join(dst, os.path.splitext(file)[0], "upx")
+        dst = _extract_to(file, "upx")
+        upx = os.path.join(dst, "upx-%s-i386_linux" % version, "upx")
 
-    obtain(url, file, md5)
+    archived = _download_to(file)
+    if not checksum(file, md5) or not os.path.isdir(dst):
+        download(url, file)
+        print("-- Unzipping:   %s" % archived)
+        if not os.path.isdir(dst):
+            os.makedirs(dst)
+        subprocess.check_call(["tar", "-xf", archived], cwd=dst)
+
     return upx
 
 
@@ -99,12 +106,9 @@ def _download_to(file):
     return dest
 
 
-def _extract_to(file):
-    name = file.split("@")[0]
-    dir_path = os.path.join(ROOT, "external", name)
-    if not os.path.isdir(dir_path):
-        os.makedirs(dir_path)
-    return dir_path
+def _extract_to(file, dirname=None):
+    name = dirname or file.split("@")[0]
+    return os.path.join(ROOT, "external", name)
 
 
 def download(url, file):
@@ -128,7 +132,9 @@ def obtain(url, file, md5):
     unpacked = _extract_to(file)
     if not checksum(file, md5) or not os.path.isdir(unpacked):
         download(url, file)
-        print("-- Unzipping: %s" % archived)
+        print("-- Unzipping:   %s" % archived)
+        if not os.path.isdir(unpacked):
+            os.makedirs(unpacked)
         subprocess.check_call([extractor, "x", "-bso0", "--", archived],
                               cwd=unpacked)
 
