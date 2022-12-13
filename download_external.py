@@ -88,8 +88,9 @@ def get_upx():
         upx = os.path.join(dst, "upx-%s-i386_linux" % version, "upx")
 
     archived = _download_to(file)
-    if not checksum(file, md5) or not os.path.isdir(dst):
-        download(url, file)
+    if not os.path.isdir(dst):
+        if not checksum(file, md5):
+            download(url, file)
         print("-- Unzipping:   %s" % archived)
         if not os.path.isdir(dst):
             os.makedirs(dst)
@@ -133,8 +134,9 @@ def obtain(url, file, md5):
     extractor = get_7z()
     archived = _download_to(file)
     unpacked = _extract_to(file)
-    if not checksum(file, md5) or not os.path.isdir(unpacked):
-        download(url, file)
+    if not os.path.isdir(unpacked):
+        if not checksum(file, md5):
+            download(url, file)
         print("-- Unzipping:   %s" % archived)
         if not os.path.isdir(unpacked):
             os.makedirs(unpacked)
