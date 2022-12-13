@@ -66,11 +66,14 @@ def get_7z():
     bitness = "64" if sys.maxsize > 2**32 else "32"
 
     if platform.system() == "Windows":
-        return os.path.join(unpacked, "win-x86", bitness, "7za.exe")
+        exe = os.path.join(unpacked, "win-x86", bitness, "7za.exe")
     elif platform.system() == "Darwin":
-        return os.path.join(unpacked, "mac-x86", bitness, "7za")
+        exe = os.path.join(unpacked, "mac-x86", bitness, "7za")
     else:
-        return os.path.join(unpacked, "linux-x86", bitness, "7za")
+        exe = os.path.join(unpacked, "linux-x86", bitness, "7za")
+
+    _chmod_x(exe)
+    return exe
 
 
 def get_upx():
