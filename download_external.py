@@ -158,10 +158,14 @@ def compress_gpu(config):
 
 
 def main(gpu_enabled, config):
+    gpu_enabled = gpu_enabled and platform.system() != "Darwin"
+
     for name, d in dependency.items():
+        if not gpu_enabled and name in ("PhysXGpu", "PhysXDevice"):
+            continue
         obtain(d["url"], d["file"], d["md5"])
 
-    if gpu_enabled and platform.system() != "Darwin":
+    if gpu_enabled:
         compress_gpu(config)
 
 
