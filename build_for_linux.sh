@@ -4,6 +4,9 @@ BUILD_TYPE=Release
 
 BUILD_DIR=build/linux/$BUILD_TYPE
 
+echo "-- Checking dependency..."
+python3 ./download_external.py --gpu --config $BUILD_TYPE
+
 mkdir -p $BUILD_DIR
 pushd $BUILD_DIR
 cmake ../../../physx -G Ninja \
