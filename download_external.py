@@ -109,7 +109,7 @@ def get_upx():
 
 
 def _chmod_x(file):
-    if platform.system() == "Linux":
+    if platform.system() != "Windows":
         subprocess.check_call(["chmod", "+x", file])
 
 
