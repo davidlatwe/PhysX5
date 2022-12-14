@@ -51,6 +51,11 @@ dependency = {
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
+def _log(message):
+    sys.__stdout__.write(message + "\n")
+    sys.__stdout__.flush()
+
+
 def get_7z():
     file = "7za@16.02.4.zip"
     url = "https://bootstrap.packman.nvidia.com/"
@@ -59,7 +64,7 @@ def get_7z():
     unpacked = _extract_to(file)
     if not os.path.isdir(unpacked):
         a_ = _download_to(file) if checksum(file, md5) else download(url, file)
-        print("-- Unzipping: %s" % a_)
+        _log("-- Unzipping: %s" % a_)
         with zipfile.ZipFile(a_, 'r') as zip_ref:
             zip_ref.extractall(unpacked)
 
@@ -94,7 +99,7 @@ def get_upx():
     if not os.path.isdir(dst):
         if not checksum(file, md5):
             download(url, file)
-        print("-- Unzipping:   %s" % archived)
+        _log("-- Unzipping:   %s" % archived)
         if not os.path.isdir(dst):
             os.makedirs(dst)
         subprocess.check_call(["tar", "-xf", archived], cwd=dst)
@@ -123,7 +128,7 @@ def _extract_to(file, dirname=None):
 
 def download(url, file):
     archived = _download_to(file)
-    print("-- Downloading: %s" % archived)
+    _log("-- Downloading: %s" % archived)
     filename, _ = urllib.request.urlretrieve(url + file, archived)
     return filename
 
@@ -143,7 +148,7 @@ def obtain(url, file, md5):
     if not os.path.isdir(unpacked):
         if not checksum(file, md5):
             download(url, file)
-        print("-- Unzipping:   %s" % archived)
+        _log("-- Unzipping:   %s" % archived)
         if not os.path.isdir(unpacked):
             os.makedirs(unpacked)
         subprocess.check_call([extractor, "x", "-bso0", "--", archived],
@@ -165,14 +170,14 @@ def compress_gpu(config):
 
     lib = os.path.join(unpacked, "bin", target, config, file)
     upx = get_upx()
-    print("-- About to compress GPU lib: %s" % lib)
+    _log("-- About to compress GPU lib: %s" % lib)
     _chmod_x(lib)
     return_code = subprocess.call([upx, "-t", "-qq", lib])
     if return_code:
-        print("-- Compressing GPU lib, this may take a few minutes...")
+        _log("-- Compressing GPU lib, this may take a few minutes...")
         subprocess.call([upx, lib])
     else:
-        print("-- GPU lib already been compressed.")
+        _log("-- GPU lib already been compressed.")
 
 
 def main(gpu_enabled, config):
