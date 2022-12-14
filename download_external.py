@@ -77,16 +77,16 @@ def get_7z():
 
 
 def get_upx():
-    version = "4.0.1"
+    version = "3.96"
     url = "https://github.com/upx/upx/releases/download/v%s/" % version
     if platform.system() == "Windows":
         file = "upx-%s-win64.zip" % version
-        md5 = "acf37b08b0788a640edb25e4de6edca9"
+        md5 = "cd1c69d51748f929a2445069f133cc3d"
         dst = _extract_to(file, "upx")
         upx = os.path.join(dst, "upx-%s-win64" % version, "upx.exe")
     else:
         file = "upx-%s-i386_linux.tar.xz" % version
-        md5 = "a36817c86da90a323eb35430f9707074"
+        md5 = "2e45b16364e2c0bdffd209058f984a4b"
         dst = _extract_to(file, "upx")
         upx = os.path.join(dst, "upx-%s-i386_linux" % version, "upx")
 
