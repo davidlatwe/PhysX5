@@ -26,6 +26,26 @@ OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+## About this fork
+
+### Changes
+* Adopted [`NVIDIAGameWorks/PhysX#222`](https://github.com/NVIDIAGameWorks/PhysX/pull/222) (partially) for CMake style build
+* Adopted [`NVIDIA-Omniverse/PhysX#51`](https://github.com/NVIDIA-Omniverse/PhysX/pull/51) for macOS support
+* Additional build scripts, also able to build snippets in headless mode (no render)
+* The `PhysXGpu` lib will be compressed by [UPX](https://upx.github.io/) (from 140MB to 25MB)
+
+### Build
+The additional `physx/CMakeLists.txt` is an entry point that leads to `physx/compiler/public`, where Nvidia build script starts with.
+
+Just run `./build_for_win32.ps1` or `./build_for_linux.sh` if on Linux.
+
+#### Build script flags
+* `-gpu` To build PhysX with GPU features or not.
+* `-snippets` Build snippets.
+* `-render` Build snippets with render (interactive 3d view window) enabled or not.
+* `-buildtype` Just, build type.
+* `-clean` Clean up build dir, and external dependencies before build.
+
 ## Introduction
 
 Welcome to the NVIDIA PhysX source code repository.
