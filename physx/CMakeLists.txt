@@ -131,4 +131,8 @@ if(NOT DISABLE_CUDA_PHYSX AND NOT APPLE)
 endif()
 
 
+# Export target?
+# set(physx_build_targets_file "${CMAKE_CURRENT_BINARY_DIR}/PhysXTargets.cmake")
+
+
 add_subdirectory(compiler/public)
