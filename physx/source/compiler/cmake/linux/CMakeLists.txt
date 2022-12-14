@@ -155,18 +155,18 @@ IF(PUBLIC_RELEASE AND NOT DISABLE_CUDA_PHYSX)
 	ENDIF()
 	IF(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
 		execute_process(
-			COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${PHYSX_PHYSXGPU_PATH}/linux.aarch64/checked/libPhysXGpu_64.so ${PX_EXE_OUTPUT_DIRECTORY_DEBUG}
-			COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${PHYSX_PHYSXGPU_PATH}/linux.aarch64/checked/libPhysXGpu_64.so ${PX_EXE_OUTPUT_DIRECTORY_CHECKED}
-			COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${PHYSX_PHYSXGPU_PATH}/linux.aarch64/profile/libPhysXGpu_64.so ${PX_EXE_OUTPUT_DIRECTORY_PROFILE}
-			COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${PHYSX_PHYSXGPU_PATH}/linux.aarch64/release/libPhysXGpu_64.so ${PX_EXE_OUTPUT_DIRECTORY_RELEASE}
+			COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${PHYSX_PHYSXGPU_PATH}/linux.aarch64/checked/libPhysXGpu_64.so ${PX_EXE_OUTPUT_DIRECTORY_DEBUG}/libPhysXGpu_64.so
+			COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${PHYSX_PHYSXGPU_PATH}/linux.aarch64/checked/libPhysXGpu_64.so ${PX_EXE_OUTPUT_DIRECTORY_CHECKED}/libPhysXGpu_64.so
+			COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${PHYSX_PHYSXGPU_PATH}/linux.aarch64/profile/libPhysXGpu_64.so ${PX_EXE_OUTPUT_DIRECTORY_PROFILE}/libPhysXGpu_64.so
+			COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${PHYSX_PHYSXGPU_PATH}/linux.aarch64/release/libPhysXGpu_64.so ${PX_EXE_OUTPUT_DIRECTORY_RELEASE}/libPhysXGpu_64.so
 		)
 	ENDIF()
 	IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 		execute_process(
-			COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${PHYSX_PHYSXGPU_PATH}/linux.clang/checked/libPhysXGpu_64.so ${PX_EXE_OUTPUT_DIRECTORY_DEBUG}
-			COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${PHYSX_PHYSXGPU_PATH}/linux.clang/checked/libPhysXGpu_64.so ${PX_EXE_OUTPUT_DIRECTORY_CHECKED}
-			COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${PHYSX_PHYSXGPU_PATH}/linux.clang/profile/libPhysXGpu_64.so ${PX_EXE_OUTPUT_DIRECTORY_PROFILE}
-			COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${PHYSX_PHYSXGPU_PATH}/linux.clang/release/libPhysXGpu_64.so ${PX_EXE_OUTPUT_DIRECTORY_RELEASE}
+			COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${PHYSX_PHYSXGPU_PATH}/linux.clang/checked/libPhysXGpu_64.so ${PX_EXE_OUTPUT_DIRECTORY_DEBUG}/libPhysXGpu_64.so
+			COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${PHYSX_PHYSXGPU_PATH}/linux.clang/checked/libPhysXGpu_64.so ${PX_EXE_OUTPUT_DIRECTORY_CHECKED}/libPhysXGpu_64.so
+			COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${PHYSX_PHYSXGPU_PATH}/linux.clang/profile/libPhysXGpu_64.so ${PX_EXE_OUTPUT_DIRECTORY_PROFILE}/libPhysXGpu_64.so
+			COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${PHYSX_PHYSXGPU_PATH}/linux.clang/release/libPhysXGpu_64.so ${PX_EXE_OUTPUT_DIRECTORY_RELEASE}/libPhysXGpu_64.so
 		)
 	ENDIF()
 ENDIF()
