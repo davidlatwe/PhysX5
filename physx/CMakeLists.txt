@@ -116,6 +116,10 @@ write_basic_package_version_file(
 
 # External dependencies
 #
+if(NOT EXISTS "${PROJECT_SOURCE_DIR}/../external")
+    message(FATAL_ERROR "PhysX dependency dir not exists, did you run the download script?" )
+endif()
+
 set(ENV{PM_CMakeModules_PATH} "${PROJECT_SOURCE_DIR}/../external/CMakeModules")
 set(ENV{PM_rapidjson_PATH} "${PROJECT_SOURCE_DIR}/../external/rapidjson")
 
