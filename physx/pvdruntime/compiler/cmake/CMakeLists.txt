@@ -24,7 +24,7 @@
 ##
 ## Copyright (c) 2008-2022 NVIDIA Corporation. All rights reserved.
 
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.13)  # CMP0077
 
 project(PVDRuntime C CXX)
 
@@ -91,4 +91,3 @@ INSTALL(
 		EXPORT PhysXSDK
 		DESTINATION $<$<CONFIG:debug>:${PX_ROOT_LIB_DIR}/debug>$<$<CONFIG:release>:${PX_ROOT_LIB_DIR}/release>$<$<CONFIG:checked>:${PX_ROOT_LIB_DIR}/checked>$<$<CONFIG:profile>:${PX_ROOT_LIB_DIR}/profile>	
 		)
-      

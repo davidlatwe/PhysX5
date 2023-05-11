@@ -68,10 +68,13 @@ IF(PX_CMAKE_SUPPRESS_REGENERATION)
 	SET(CMAKE_SUPPRESS_REGENERATION true)
 ENDIF()
 
-# Add PhysX SDK Source code to solution
-ADD_SUBDIRECTORY(${PHYSX_ROOT_DIR}/source/compiler/cmake ${CMAKE_CURRENT_BINARY_DIR}/sdk_source_bin)
+# Build Projects
 
-MESSAGE("Added PhysX")
+IF(NOT PX_BUILDPVDRUNTIME_ONLY)
+	# Add PhysX SDK Source code to solution
+	ADD_SUBDIRECTORY(${PHYSX_ROOT_DIR}/source/compiler/cmake ${CMAKE_CURRENT_BINARY_DIR}/sdk_source_bin)
+	MESSAGE("Added PhysX")
+ENDIF()
 
 IF(PX_BUILDPVDRUNTIME)
 	IF(TARGET_BUILD_PLATFORM STREQUAL "windows" OR TARGET_BUILD_PLATFORM STREQUAL "linux")
@@ -83,7 +86,6 @@ ENDIF()
 IF(PX_BUILDSNIPPETS)
 	# Add Snippets projects into the solution
 	ADD_SUBDIRECTORY(${PHYSX_ROOT_DIR}/snippets/compiler/cmake ${CMAKE_CURRENT_BINARY_DIR}/sdk_snippets_bin)
-
 	MESSAGE("Added Snippets")
 ENDIF()
 
