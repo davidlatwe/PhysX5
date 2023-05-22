@@ -11,9 +11,9 @@ mkdir -p $BUILD_DIR
 pushd $BUILD_DIR
 cmake ../../../physx -G Ninja \
     -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-    -DDISABLE_CUDA_PHYSX=No \
-	-DPX_BUILDSNIPPETS=ON \
-	-DPX_BUILDSNIPPETS_RENDER=OFF
+    -DPX_ENABLE_GPU=ON \
+	  -DPX_BUILDSNIPPETS=ON \
+	  -DPX_BUILDSNIPPETS_RENDER=OFF
 
 cmake --build . --config $BUILD_TYPE
 popd

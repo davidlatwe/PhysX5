@@ -45,6 +45,7 @@ message(STATUS "PhysXSDK VERSION: ${PHYSX_VERSION}")
 option(PX_BUILDSNIPPETS "Generate the snippets" OFF)
 option(PX_BUILDSNIPPETS_RENDER "Generate the snippets with rendering enabled" ON)
 option(PX_CMAKE_SUPPRESS_REGENERATION "Disable zero_check projects" OFF)
+option(PX_ENABLE_GPU "Enable GPU features" ON)
 
 # PhysX options:
 option(PX_SCALAR_MATH "Disable SIMD math" OFF)
@@ -54,13 +55,11 @@ option(PX_GENERATE_GPU_PROJECTS_ONLY "Generate GPU projects only. (Untested)" OF
 mark_as_advanced(PX_GENERATE_GPU_PROJECTS_ONLY)
 
 # GPU feature switch:
-if(DISABLE_CUDA_PHYSX)
-    set(DISABLE_CUDA_PHYSX "DISABLE_CUDA_PHYSX" CACHE STRING "" FORCE)
-    message(STATUS "DISABLE_CUDA_PHYSX: Yes")
-else()
-    set(DISABLE_CUDA_PHYSX "" CACHE STRING "" FORCE)
-    message(STATUS "DISABLE_CUDA_PHYSX: No")
+if(NOT ${PX_ENABLE_GPU} OR APPLE)
+    set(CUDA_FLAG "DISABLE_CUDA_PHYSX")
+    set(PX_ENABLE_GPU OFF)
 endif()
+message(STATUS "GPU Enabled: ${PX_ENABLE_GPU}")
 
 set(RENDER_SNIPPET "")
 if(PX_BUILDSNIPPETS_RENDER)
@@ -123,7 +122,7 @@ endif()
 set(ENV{PM_CMakeModules_PATH} "${PROJECT_SOURCE_DIR}/../external/CMakeModules")
 set(ENV{PM_rapidjson_PATH} "${PROJECT_SOURCE_DIR}/../external/rapidjson")
 
-if(NOT DISABLE_CUDA_PHYSX AND NOT APPLE)
+if(PX_ENABLE_GPU AND NOT APPLE)
     if(WIN32)
         set(ENV{PM_freeglut_PATH} "${PROJECT_SOURCE_DIR}/../external/freeglut-windows")
         set(ENV{PM_PhysXDevice_PATH} "${PROJECT_SOURCE_DIR}/../external/PhysXDevice")

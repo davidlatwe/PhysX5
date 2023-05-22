@@ -57,14 +57,14 @@ write-host "Building $buildtype to $builddir"
 pushd # Store current path
 
 write-host "-- Checking dependency..."
-python ./download_external.py $(if ($gpu) { "--gpu" } else { "" }) --config $buildtype
+python ./download_external.py $(if ($gpu) { "--gpu" } else {}) --config $buildtype
 
 mkdir -ea silentlycontinue $builddir
 cd $builddir
 
 cmake ../../../physx -G Ninja `
     -DCMAKE_BUILD_TYPE="$buildtype" `
-    -DDISABLE_CUDA_PHYSX="$(if ($gpu) { "No" } else { "Yes" })" `
+    -DPX_ENABLE_GPU="$(if ($gpu) { "ON" } else { "OFF" })" `
     -DPX_BUILDPVDRUNTIME="$(if ($pvdruntime) { "ON" } else { "OFF" })" `
     -DPX_BUILDSNIPPETS="$(if ($snippets) { "ON" } else { "OFF" })" `
     -DPX_BUILDSNIPPETS_RENDER="$(if ($render) { "ON" } else { "OFF" })" `
