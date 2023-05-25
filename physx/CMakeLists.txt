@@ -39,6 +39,7 @@ project(PhysXSDK
         LANGUAGES C CXX
         VERSION ${PHYSX_VERSION})
 message(STATUS "PhysXSDK VERSION: ${PHYSX_VERSION}")
+message(STATUS "PhysXSDK BUILD TYPE: ${CMAKE_BUILD_TYPE}")
 
 
 # PhysXSDK options:
